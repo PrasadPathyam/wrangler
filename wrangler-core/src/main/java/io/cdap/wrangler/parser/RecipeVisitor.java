@@ -38,6 +38,10 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.checkerframework.common.returnsreceiver.qual.This;
+
+import io.cdap.wrangler.api.parser.ByteSize;
+import io.cdap.wrangler.api.parser.TimeDuration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -316,6 +320,32 @@ public final class RecipeVisitor extends DirectivesBaseVisitor<RecipeSymbol.Buil
     builder.addToken(new TextList(strs));
     return builder;
   }
+
+  /**
+   * This visitor method extracts a byte size argument from the directive (e.g., "10MB").
+   * It constructs a <code>ByteSize</code> token and adds it to the <code>TokenGroup</code>.
+   */
+  @Override
+  public RecipeSymbol.Builder visitByteSizeArg(DirectivesParser.ByteSizeArgContext ctx) {
+    ByteSize byteSize = new ByteSize(ctx.getText());
+    builder.addToken(byteSize);  // Assumes 'builder' is accessible in the class
+    return builder;
+}
+
+
+  /**
+ * This visitor method extracts a time duration argument from the directive (e.g., "200ms").
+ * It constructs a <code>TimeDuration</code> token and adds it to the <code>TokenGroup</code>.
+ */
+@Override
+public RecipeSymbol.Builder visitTimeDurationArg(DirectivesParser.TimeDurationArgContext ctx) {
+  TimeDuration timeDuration = new TimeDuration(ctx.getText());
+  builder.addToken(timeDuration);  // Assumes 'builder' is accessible in the class
+  return builder;
+}
+
+
+
 
   private SourceInfo getOriginalSource(ParserRuleContext ctx) {
     int a = ctx.getStart().getStartIndex();
